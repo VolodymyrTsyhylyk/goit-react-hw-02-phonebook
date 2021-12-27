@@ -1,58 +1,60 @@
 import React, { Component } from 'react';
-import { nanoid } from 'nanoid';
+import toast, { Toaster } from 'react-hot-toast';
+import Filter from './component/Filter/filter';
+import ContactList from './component/ContactList/ContactList';
+import ContactForm from './component/ContactForm/ContactForm';
 
-class App extends Component { 
-state = {
-  contacts: [],
-  name: ''
-}
+class App extends Component {
+  state = {
+    contacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ],
+    filter: '',
+  };
 
-  inputId = nanoid();
+  addNewContact = newContact => {
+    if (this.state.contacts.some(contact => contact.name === newContact.name)) {
+      toast.error('contact with such name already exists');
+      return;
+    }
+    this.setState(prevState => ({
+      contacts: [newContact, ...prevState.contacts],
+    }));
+    toast.success('contact added');
+  };
 
-  render() { 
+  deleteContact = idBtn => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== idBtn),
+    }));
+    toast.success('delete is complete');
+  };
+
+  handleChange = e => {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
+  };
+
+  render() {
+    const { contacts, filter } = this.state;
     return (
       <>
+        <Toaster />
         <h1>Phonebook</h1>
-        <form>
-          <label>
-            Name
-        <input
-          type="text"
-          name="name"
-          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-          required
-            />
-            </label>
-          </form>
+        <ContactForm addNewContact={this.addNewContact} />
+        <h2>Contacts</h2>
+        <Filter filter={filter} onChangeFilter={this.handleChange} />
+        <ContactList
+          contacts={contacts}
+          filter={filter}
+          deleteContact={this.deleteContact}
+        />
       </>
-    )
+    );
   }
 }
 
 export default App;
-// import logo from './logo.svg';
-// import './App.css';
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.js</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
-// export default App;
