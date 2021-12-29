@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+import { nanoid } from 'nanoid';
 import Filter from './component/Filter/filter';
 import ContactList from './component/ContactList/ContactList';
 import ContactForm from './component/ContactForm/ContactForm';
@@ -15,16 +16,35 @@ class App extends Component {
     filter: '',
   };
 
-  addNewContact = newContact => {
-    if (this.state.contacts.some(contact => contact.name === newContact.name)) {
-      toast.error('contact with such name already exists');
-      return;
-    }
-    this.setState(prevState => ({
-      contacts: [newContact, ...prevState.contacts],
-    }));
-    toast.success('contact added');
+  // addNewContact = newContact => {
+  //   if (this.state.contacts.find(contact => contact.name.toLowerCase() === newContact.name.toLowerCase())) {
+  //     toast.error('contact with such name already exists');
+  //     return;
+  //   }
+  //   this.setState(prevState => ({
+  //     contacts: [newContact, ...prevState.contacts],
+  //   }));
+  //   toast.success('contact added');
+  // };
+ addNewContact = (contactName) => {
+    const contactToAdd = {
+      ...contactName,
+      id: nanoid(),
+    };
+
+    const theSameContact = this.state.contacts.some((contact) =>
+      contact.name.toLowerCase().includes(contactName.name.toLowerCase())
+    );
+
+    if (theSameContact)
+      return alert(`${contactName.name}  is already in contacts.`);
+    else
+      this.setState((state) => ({
+        contacts: [...state.contacts, contactToAdd],
+      }));
   };
+
+
 
   deleteContact = idBtn => {
     this.setState(prevState => ({
