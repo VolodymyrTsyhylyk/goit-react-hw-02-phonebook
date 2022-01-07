@@ -1,5 +1,5 @@
 import { FilterInput } from './Filter.styled';
-
+// Filter
 export default function Filter({ filter, onChangeFilter }) {
   return (
     <>
